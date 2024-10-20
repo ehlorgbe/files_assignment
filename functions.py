@@ -47,7 +47,7 @@ def adoptions_to_csv(data, file_name="adoptions.csv"):
                 writer.writerow([adoption.get('id'), adoption.get('date'), adoption.get('quantity'), book.get('id'), book.get('isbn10'), book.get('isbn13'), book.get('title'), book.get('category')])
 
 
-def export_contacts_to_csv(data, file_name="contacts.csv"):
+def contacts_to_csv(data, file_name="contacts.csv"):
     with open(file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Contact_order", "Gender", "First Name", "Last Name"])
@@ -55,23 +55,17 @@ def export_contacts_to_csv(data, file_name="contacts.csv"):
             for contact in record.get('contacts', []):
                 writer.writerow([contact.get('order'), contact.get('gender'), contact.get('firstname'), contact.get('lastname')])
 
-def export_messages_to_csv(data, file_name="messages.csv"):
+def messages_to_csv(data, file_name="messages.csv"):
     with open(file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Message_ID", "Date", "Content", "Category"])
         for record in data:
             for message in record.get('messages', []):
                 writer.writerow([message.get('id'), message.get('date'), message.get('content'), message.get('category')])
-def export_messages_to_csv(data, file_name="messages.csv"):
-    with open(file_name, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Message ID", "Date", "Content", "Category"])
-        for record in data:
-            for message in record.get('messages', []):
-                writer.writerow([ message.get('date'), message.get('content'), message.get('category')])
+
 
 '''function that accepts a state name and displays list of universities in that state'''
-def list_universities_by_state(data, state_name):
+def universities_by_state(data, state_name):
     universities_in_state = []
     for record in data:
         university = record.get('university', {})
@@ -81,6 +75,27 @@ def list_universities_by_state(data, state_name):
     if universities_in_state:
         print(f"Universities in {state_name}:")
         for uni in universities_in_state:
-            print(uni)
+           print(uni)
     else:
         print(f"No universities found in {state_name}.")
+
+
+'''lists all book categories and saves the list of titles for a selected category to a text file'''
+def display_book_categories(data):
+    category = []
+    for record in data:
+        for adoption in record.get('adoptions', []):
+            book = adoption.get('book', {})
+            if book.get('category') not in category:
+                category.append(book.get('category'))
+    print(category)
+
+
+def save_titles_by_category(data, file_name="books_in_category.txt"):
+    display_book_categories(data)
+    with open(file_name, mode='w') as file:
+        for record in data:
+            for adoption in record.get('adoptions', []):
+                book = adoption.get('book', {})
+                if book.get('category') == chosen_category:
+                    file.write(f"{book.get('title')}\n")
