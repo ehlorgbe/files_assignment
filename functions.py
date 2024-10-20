@@ -55,7 +55,6 @@ def export_contacts_to_csv(data, file_name="contacts.csv"):
             for contact in record.get('contacts', []):
                 writer.writerow([contact.get('order'), contact.get('gender'), contact.get('firstname'), contact.get('lastname')])
 
-
 def export_messages_to_csv(data, file_name="messages.csv"):
     with open(file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
@@ -63,3 +62,25 @@ def export_messages_to_csv(data, file_name="messages.csv"):
         for record in data:
             for message in record.get('messages', []):
                 writer.writerow([message.get('id'), message.get('date'), message.get('content'), message.get('category')])
+def export_messages_to_csv(data, file_name="messages.csv"):
+    with open(file_name, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Message ID", "Date", "Content", "Category"])
+        for record in data:
+            for message in record.get('messages', []):
+                writer.writerow([ message.get('date'), message.get('content'), message.get('category')])
+
+'''function that accepts a state name and displays list of universities in that state'''
+def list_universities_by_state(data, state_name):
+    universities_in_state = []
+    for record in data:
+        university = record.get('university', {})
+        if university.get('state') == state_name:
+            universities_in_state.append(university.get('name'))
+    
+    if universities_in_state:
+        print(f"Universities in {state_name}:")
+        for uni in universities_in_state:
+            print(uni)
+    else:
+        print(f"No universities found in {state_name}.")
