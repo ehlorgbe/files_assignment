@@ -1,7 +1,7 @@
 import os
 import json
 import csv
-
+import list_of_states
 '''Function that loads json file from directory'''
 def load_json_file():
     try:
@@ -65,19 +65,23 @@ def messages_to_csv(data, file_name="messages.csv"):
 
 
 '''function that accepts a state name and displays list of universities in that state'''
-def universities_by_state(data, state_name):
-    universities_in_state = []
-    for record in data:
-        university = record.get('university', {})
-        if university.get('state') == state_name:
-            universities_in_state.append(university.get('name'))
+def universities_by_state(data):
+    state_name = (input("Enter the name of the state:\n")).title()
+    if state_name in list_of_states.us_states:
+        universities_in_state = []
+        for record in data:
+            university = record.get('university', {})
+            if university.get('state') == state_name:
+                universities_in_state.append(university.get('name'))
     
-    if universities_in_state:
-        print(f"Universities in {state_name}:")
-        for uni in universities_in_state:
-           print(uni)
+        if universities_in_state:
+            print(f"Universities in {state_name}:")
+            for uni in universities_in_state:
+                print(uni)
+        else:
+            print(f"No universities found in {state_name}.")
     else:
-        print(f"No universities found in {state_name}.")
+        print(f"{state_name} does not exist")
 
 
 '''lists all book categories and saves the list of titles for a selected category to a text file'''
@@ -88,14 +92,20 @@ def display_book_categories(data):
             book = adoption.get('book', {})
             if book.get('category') not in category:
                 category.append(book.get('category'))
-    print(category)
+    return category
 
 
 def save_titles_by_category(data, file_name="books_in_category.txt"):
-    display_book_categories(data)
-    with open(file_name, mode='w') as file:
-        for record in data:
-            for adoption in record.get('adoptions', []):
-                book = adoption.get('book', {})
-                if book.get('category') == chosen_category:
-                    file.write(f"{book.get('title')}\n")
+    print(f"Available categories are:\n {display_book_categories(data)}")
+    chosen_category = (input("Select a category from the list above: ")).title()
+    if chosen_category in display_book_categories(data):
+        print(f"{file_name} has been sucessfully created!!")
+        with open(file_name, mode='w') as file:
+            for record in data:
+                for adoption in record.get('adoptions', []):
+                    book = adoption.get('book', {})
+                    if book.get('category') == chosen_category:
+                        file.write(f"{book.get('title')}\n")
+    else:
+        print("Invalid input try again")           
+
