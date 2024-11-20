@@ -63,6 +63,15 @@ def messages_to_csv(data, file_name="messages.csv"):
             for message in record.get('messages', []):
                 writer.writerow([message.get('id'), message.get('date'), message.get('content'), message.get('category')])
 
+def books_to_csv(data, file_name = "books.csv"):
+    with open(file_name, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["book_ID", "ISBN10", "ISBN13", "Title", "Category"])
+        for record in data:
+            for i in record.get('books',[]):
+                for book in record.get('book', {}):
+                    writer.writerow([book.get('id'), book.get('isbn10'), book.get('isbn13'), book.get('title'), book.get('category')])
+
 
 '''function that accepts a state name and displays list of universities in that state'''
 def universities_by_state(data):
